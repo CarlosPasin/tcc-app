@@ -168,6 +168,9 @@ class ChampionshipViewSet(viewsets.ModelViewSet):
     def createBrackets(self, request, pk):
         championship = Championship.objects.filter(id=pk).first()
         teams = championship.teams.all()
+        times = [teams]
+        random.shuffle(times)
+    
         teamsCount = teams.count
         oitavas = True if teamsCount/2 == 4 else False
 

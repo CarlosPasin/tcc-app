@@ -2,21 +2,33 @@ import React from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { styles } from "./styles";
 import { HeaderComponent } from "../../components/Header";
+import { useRankings } from "../../hooks/ranking";
+import { useNavigation } from "@react-navigation/native";
+import { SetCurrentRanking } from "../../store/modules/ranking/actions";
 
 export function Ranking() {
-  const data = [{ id: 1, name: "tênis", qnt:"32 players" }, { id: 2, name: "tênis", qnt:"32 players" }];
+  const { list } = useRankings();
+  const navigation = useNavigation();
 
   return (
     <View style={{ flex: 1 }}>
-      <HeaderComponent name="Ranking"/>
+      <HeaderComponent name="Ranking" />
       <FlatList
-        data={data}
+        data={list}
         keyExtractor={(item) => `${item.id}`}
-        renderItem={({ item }) => 
-        <TouchableOpacity style={styles.buttonList}>
-
-        <Text style={styles.list}>{item.name} <Text style={styles.players}>{item.qnt}</Text></Text>
-        </TouchableOpacity>}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.buttonList}
+            onPress={() => {
+              SetCurrentRanking(item);
+              navigation.navigate("CurrentRanking" as never);
+            }}
+          >
+            <Text style={styles.list}>
+              {item.name} <Text style={styles.players}>{item.qtd}</Text>
+            </Text>
+          </TouchableOpacity>
+        )}
       />
     </View>
   );

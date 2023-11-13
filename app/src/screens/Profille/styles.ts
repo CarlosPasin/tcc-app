@@ -46,4 +46,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
   },
+  text: {
+    color: theme.colors.blue,
+  }
 });
