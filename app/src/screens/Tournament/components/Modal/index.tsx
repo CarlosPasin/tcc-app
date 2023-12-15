@@ -1,4 +1,4 @@
-import { Text, Modal, View, TouchableOpacity } from "react-native";
+import { Text, Modal, View, TouchableOpacity, Alert } from "react-native";
 import { styles } from "./styles";
 import React from "react";
 import { TextInput } from "react-native-gesture-handler";
@@ -6,7 +6,6 @@ import { ITournament } from "../../../../interfaces/ITournament";
 import MultiSelect from "react-native-multiple-select";
 import { useRankingPlayers, useRankings } from "../../../../hooks/ranking";
 import { theme } from "../../../../global/styles/theme";
-import { IRanking } from "../../../../interfaces/IRanking";
 
 interface Props {
   modalVisible: boolean;
@@ -57,17 +56,12 @@ export function ModalTournament({ modalVisible, onClose, onCreate }: Props) {
             items={list ?? []}
             uniqueKey="name"
             onSelectedItemsChange={(i) => {
-              if (selectedItems.length !== 8) {
-                setSelectedItems(i);
-              } else {
-                alert("o maximo de usuários selecionados é 8");
-              }
+              setSelectedItems(i);
             }}
             selectedItems={selectedItems}
             selectText="Selecione as pessoas"
             searchInputPlaceholderText="Buscar pessoas"
             onChangeInput={(text) => console.log(text)}
-            altFontFamily="ProximaNova-Light"
             tagRemoveIconColor="#CCC"
             tagBorderColor="#CCC"
             tagTextColor="#CCC"
@@ -89,7 +83,6 @@ export function ModalTournament({ modalVisible, onClose, onCreate }: Props) {
             selectText="Selecione o torneio"
             searchInputPlaceholderText="Buscar pessoas"
             onChangeInput={(text) => console.log(text)}
-            altFontFamily="ProximaNova-Light"
             tagRemoveIconColor="#CCC"
             tagBorderColor="#CCC"
             tagTextColor="#CCC"
@@ -104,56 +97,33 @@ export function ModalTournament({ modalVisible, onClose, onCreate }: Props) {
           <TouchableOpacity
             style={styles.modelButton}
             onPress={() => {
+              if (selectedItems.length > 4) { Alert.alert('O número de pessoas não pode ser maior que 4'); return; }
               onCreate({
-                id: Date.now(),
+                id: Date.now() + Math.random(),
                 name: nameTournament,
                 tournament: {
                   semifinais: [
                     [
                       {
-                        id: Date.now(),
+                        id: list?.filter(item => item.name === shuffleSelectedItems[0])[0].id,
                         nome: shuffleSelectedItems[0],
                         jogadores: ["a"],
                       },
                       {
-                        id: Date.now(),
+                        id: list?.filter(item => item.name === shuffleSelectedItems[1])[0].id,
                         nome: shuffleSelectedItems[1],
                         jogadores: ["a"],
                       },
                     ],
                     [
                       {
-                        id: Date.now(),
+                        id: list?.filter(item => item.name === shuffleSelectedItems[2])[0].id,
                         nome: shuffleSelectedItems[2],
                         jogadores: ["a"],
                       },
                       {
-                        id: Date.now(),
+                        id: list?.filter(item => item.name === shuffleSelectedItems[3])[0].id,
                         nome: shuffleSelectedItems[3],
-                        jogadores: ["a"],
-                      },
-                    ],
-                    [
-                      {
-                        id: Date.now(),
-                        nome: shuffleSelectedItems[4],
-                        jogadores: ["a"],
-                      },
-                      {
-                        id: Date.now(),
-                        nome: shuffleSelectedItems[5],
-                        jogadores: ["a"],
-                      },
-                    ],
-                    [
-                      {
-                        id: Date.now(),
-                        nome: shuffleSelectedItems[6],
-                        jogadores: ["a"],
-                      },
-                      {
-                        id: Date.now(),
-                        nome: shuffleSelectedItems[7],
                         jogadores: ["a"],
                       },
                     ],
@@ -161,6 +131,8 @@ export function ModalTournament({ modalVisible, onClose, onCreate }: Props) {
                   final: {},
                 },
               } as ITournament);
+              setSelectedItems([])
+
               onClose();
             }}
           >

@@ -2,14 +2,14 @@ import React from "react";
 import { Text, Modal, View, TouchableOpacity, Alert } from "react-native";
 import { styles } from "./styles";
 import { theme } from "../../../../global/styles/theme";
-import { IRankingPlayer } from "../../../../interfaces/IRanking";
+import { IUser } from "../../../../interfaces/IUser";
 
 interface Props {
   modalVisible: boolean;
-  playerA: IRankingPlayer;
-  playerB: IRankingPlayer;
+  playerA: IUser;
+  playerB: IUser;
   onClose(): void;
-  onConfirm(player: IRankingPlayer): void;
+  onConfirm(player: IUser): void;
 }
 
 export function ModalRanking({
@@ -20,7 +20,7 @@ export function ModalRanking({
   onConfirm,
 }: Props) {
   const [currentSelectedPlayer, setCurrentSelectedPlayer] =
-    React.useState<IRankingPlayer>();
+    React.useState<IUser>();
   return (
     <Modal
       transparent
@@ -116,7 +116,7 @@ export function ModalRanking({
               }
             }}
           >
-            <Text style={styles.modelButtonText}>Criar</Text>
+            <Text style={styles.modelButtonText}>Confirmar</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.modelButton}

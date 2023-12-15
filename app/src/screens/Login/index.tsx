@@ -6,15 +6,19 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import { styles } from "./styles";
 import { Logo } from "../../assets/logo";
 import { useNavigation } from "@react-navigation/native";
+import { useUser } from "../../hooks/user";
+import { SetCurrentUser } from "../../store/modules/user/actions";
 
 export function Login() {
   const [login, onChangeUser] = React.useState("");
   const [password, onChangePassword] = React.useState("");
   const navigation = useNavigation();
+  const { list: users } = useUser();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,8 +51,14 @@ export function Login() {
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => {
-            navigation.navigate("Ranking" as never);
+          onPress={async() => {
+            const index = users.findIndex(item => item.username === login && item.psw === password)
+            if (index > -1) {
+              await SetCurrentUser(users[index])
+              navigation.navigate("Ranking" as never);
+            } else {
+              Alert.alert('Usuário não encontrado')
+            }
           }}
         >
           <Text style={styles.buttonText}>Logar</Text>

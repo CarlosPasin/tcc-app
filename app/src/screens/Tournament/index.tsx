@@ -4,8 +4,6 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  Modal,
-  Alert,
 } from "react-native";
 import { styles } from "./styles";
 import { AntDesign } from "@expo/vector-icons";
@@ -33,10 +31,9 @@ export function TournamentScreen() {
         }}
         onCreate={(torneio) => {
           if (torneio) addTournament(torneio);
-          console.log(JSON.stringify(torneio));
         }}
       />
-      <HeaderComponent name="Campeonato" />
+      <HeaderComponent name="Campeonatos" />
       <FlatList
         data={list}
         keyExtractor={(item) => `${item.id}`}

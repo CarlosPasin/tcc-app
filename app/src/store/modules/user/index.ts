@@ -4,6 +4,7 @@ import { IUser } from "../../../interfaces/IUser";
 
 interface State {
   user: {
+    list: IUser[];
     data?: IUser;
     loading: boolean;
     loadError: boolean;
@@ -12,7 +13,9 @@ interface State {
 
 const defaultState: State = {
   user: {
-    data: { id: 3, name: "Christopher", points: 75 },
+    list: [
+        { id: 3, name: "Christopher", points: 75, username: 'chris', psw: '1234' },
+    ],
     loadError: false,
     loading: false,
   },

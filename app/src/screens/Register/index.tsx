@@ -5,18 +5,41 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
+import { createUser } from "../../store/modules/user/actions";
 
 export function Register() {
   const [login, onChangeUser] = React.useState("");
   const [name, onChangeName] = React.useState("");
-  const [phone, onChangePhone] = React.useState("");
-  const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
   const [confirmPassword, onChangeConfirmPassword] = React.useState("");
   const navigation = useNavigation();
+
+  const saveUser = () => {
+    if (!name) {
+      Alert.alert("Digite o seu nome")
+    } else if (!login) {
+      Alert.alert("Digite o seu login")
+    } else if (!password) {
+      Alert.alert("Digite a sua senha")
+    } else if (!confirmPassword) {
+      Alert.alert("Digite a sua confirmação senha")
+    } else if (password !== confirmPassword) {
+      Alert.alert("Senhas diferentes")
+    } else {
+      const user = {
+        id: Math.floor(Math.random() * (1000 - 10 + 1) + 10),
+        username: login,
+        name,
+        psw: password,
+        points: 0,
+      }
+      createUser(user)
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,7 +57,7 @@ export function Register() {
           />
         </View>
         <View style={styles.containerInput}>
-          <Text>Nome completo</Text>
+          <Text>Nome</Text>
           <TextInput
             style={styles.textInput}
             onChangeText={(text) => {
@@ -42,30 +65,6 @@ export function Register() {
             }}
             value={name}
             placeholder="Digite seu Nome Completo"
-            placeholderTextColor={"#959595"}
-          />
-        </View>
-        <View style={styles.containerInput}>
-          <Text>Telefone</Text>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(text) => {
-              onChangePhone(text);
-            }}
-            value={phone}
-            placeholder="Digite seu Telefone"
-            placeholderTextColor={"#959595"}
-          />
-        </View>
-        <View style={styles.containerInput}>
-          <Text>Email</Text>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(text) => {
-              onChangeEmail(text);
-            }}
-            value={email}
-            placeholder="Digite seu Email"
             placeholderTextColor={"#959595"}
           />
         </View>
@@ -98,6 +97,7 @@ export function Register() {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
+            saveUser()
             navigation.navigate("Login" as never);
           }}
         >

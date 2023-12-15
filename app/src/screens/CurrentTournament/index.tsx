@@ -14,9 +14,10 @@ export function CurrentTournament() {
 
   const disabledButtonFinal = React.useMemo(
     () =>
-      Object.keys(currentTournament!.tournament.final).length > 0 ? false : true,
+      currentTournament!.tournament.final.length > 0 ? false : true,
     [currentTournament]
   );
+
 
   return (
     <SafeAreaView>

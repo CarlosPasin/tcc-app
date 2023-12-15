@@ -7,43 +7,38 @@ import { useRankingPlayers } from "../../hooks/ranking";
 import { useUser } from "../../hooks/user";
 import { theme } from "../../global/styles/theme";
 import { ModalRanking } from "./components/Modal";
-import ranking from "../../store/modules/ranking";
+import { IUser } from "../../interfaces/IUser";
+import { updateRanking } from "../../store/modules/ranking/actions";
 
 export function CurrentRanking() {
   const { data: currentPlayerRanking, list } = useRankingPlayers();
   const { data: user } = useUser();
-  const playersOrder = list.sort((a,b) => b.points - a.points);
-  const matchs = CurrentRanking!.ranking.name;
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [challenged, setChallenged] = React.useState<IUser>({ id: 0, name: '', points: 0 });
+
+  const currentUser = React.useMemo(() => list?.filter(item => item.id === user?.id)[0], [list]);
+
   return (
-    <SafeAreaView>
-{/*             {CurrentRanking && (
-        <ModalRanking
-          modalVisible={modalVisible}
-          onClose={() => {
-            setModalVisible(false);
-          }}
-          onConfirm={(time) => {
-            const timesAtualizados = CurrentRanking?.ranking[name].map(
-              () => {
-                
-                if (playerA.id === time.id) {
-                  playerA = { ...playerA, ganhador: true };
-                  playerB = { ...playerB, ganhador: false };
-                }
-                if (playerB.id === time.id) {
-                  playerA = { ...playerA, ganhador: false };
-                  timeB = { ...playerB, ganhador: true };
-                }
-                
-                return [playerA, playerB];
-              }
-              );
-              > */}
+    <SafeAreaView style={{flex: 1}}>
+      <ModalRanking
+        modalVisible={modalVisible}
+        onClose={() => {
+          setModalVisible(false);
+        }}
+        onConfirm={async(time) => {
+          if (time.id === currentUser?.id) {
+            updateRanking(currentUser, challenged)
+          }
+        }}
+        playerA={currentUser!}
+        playerB={challenged}
+      />
               
       <HeaderComponent name={currentPlayerRanking?.name ?? ""} canGoback />
 
       <FlatList
-        data={list}
+        scrollEnabled
+        data={list!.slice().sort((a, b) => { return b.points - a.points; }) || []}
         keyExtractor={(item) => `${item.id}`}
         renderItem={({ item, index }) => (
           <View style={styles.containerItemList}>
@@ -71,7 +66,7 @@ export function CurrentRanking() {
                     },
                     {
                       text: "Sim",
-                      onPress: () => {},
+                      onPress: async() => { await setChallenged(item); setModalVisible(true) },
                     },
                   ]);
                 }
@@ -79,7 +74,7 @@ export function CurrentRanking() {
             >
               <Text style={styles.list}>
                 {item.name}
-                {user?.id == item.id ? " (Você)" : ""}
+                {user?.id === item.id ? " (Você)" : ""}
               </Text>
               <Text style={styles.list}>{item.points}</Text>
             </TouchableOpacity>

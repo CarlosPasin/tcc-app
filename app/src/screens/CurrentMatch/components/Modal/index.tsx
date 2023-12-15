@@ -115,7 +115,7 @@ export function ModalMatch({
               }
             }}
           >
-            <Text style={styles.modelButtonText}>Criar</Text>
+            <Text style={styles.modelButtonText}>Confirmar</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.modelButton}

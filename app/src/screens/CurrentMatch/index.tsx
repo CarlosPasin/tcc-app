@@ -4,11 +4,11 @@ import { HeaderComponent } from "../../components/Header";
 
 import { TouchableOpacity, Text, FlatList } from "react-native";
 import { styles } from "./styles";
-import { useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import { ModalMatch } from "./components/Modal";
 import { ITime, ITournament } from "../../interfaces/ITournament";
 import { useTournament } from "../../hooks/tournament";
-import { SetCurrentTournament } from "../../store/modules/tournament/actions";
+import { SetCurrentTournament, createFinal, setChampion } from "../../store/modules/tournament/actions";
 import { theme } from "../../global/styles/theme";
 
 interface Props {
@@ -21,9 +21,9 @@ export function CurrentMatch() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [currentMatch, setCurrentMatch] = React.useState<Array<ITime>>();
   const { data: currentTournament } = useTournament();
+  const navigation: NavigationProp<any> = useNavigation();
 
   const matchs = currentTournament!.tournament[name];
-  console.log(JSON.stringify(currentTournament));
 
   return (
     <SafeAreaView>
@@ -41,12 +41,13 @@ export function CurrentMatch() {
                 if (timeA.id === time.id) {
                   timeA = { ...timeA, ganhador: true };
                   timeB = { ...timeB, ganhador: false };
+                  if (name === 'final') setChampion(timeA)
                 }
                 if (timeB.id === time.id) {
                   timeA = { ...timeA, ganhador: false };
                   timeB = { ...timeB, ganhador: true };
+                  if (name === 'final') setChampion(timeB)
                 }
-
                 return [timeA, timeB];
               }
             );
@@ -111,6 +112,22 @@ export function CurrentMatch() {
           </TouchableOpacity>
         )}
       />
+      {name === 'semifinais' &&
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            let [match1, match2] = matchs;
+            let winner1 = match1.filter((item) => item.ganhador === true)[0]
+            let winner2 = match2.filter((item) => item.ganhador === true)[0]
+            delete winner1.ganhador
+            delete winner2.ganhador
+            const final = [[winner1, winner2]]
+            createFinal(matchs, final)
+            navigation.goBack()
+          }}
+        >
+          <Text style={styles.text}>Confirmar</Text>
+        </TouchableOpacity>}
     </SafeAreaView>
   );
 }
